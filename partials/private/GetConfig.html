@@ -1,0 +1,23 @@
+{{/*
+  GetConfig
+  Retrieve the module's config set in the site's Params.
+
+  @author @regisphilibert
+
+  @context Anything (.)
+
+  @access private
+
+  @return Map
+
+  @example - Go Template
+    {{ with partialCached "tnd-{moduleName}/private/GetConfig" "GetConfig" }}
+      {{ $config := . }}
+    {{ end }}
+*/}}
+{{ $config := dict }}
+{{ with site.Params.tnd_{moduleName} }}
+  {{ $config = . }}
+{{ end }}
+
+{{ return $config }}
