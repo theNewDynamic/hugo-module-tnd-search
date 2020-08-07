@@ -1,0 +1,54 @@
+{{/*
+	Default Transformer
+
+	@author @regisphilibert
+
+	@context (Page) .
+
+	@return Map of the page's transformed data
+
+	@access private
+
+	@example - Go Template
+		{{ partial"transformers/default" . }}
+*/}}
+{{ $s := newScratch }}
+{{ $config := partialCached "tnd-search/private/GetConfig" "GetConfig" }}
+{{ with .Title }}
+	{{ $s.SetInMap "item" "title" . }}	
+{{ end }}
+{{ with .Date }}
+	{{ $s.SetInMap "item" "created" . }}
+{{ end }}
+{{ with .Params.lastMod }}
+{{ $s.SetInMap "item" "updated" . }}
+{{ end }}
+
+{{/* Others */}}
+{{ $s.SetInMap "item" "type" .Type }}
+{{ $s.SetInMap "item" "draft" (default false .Draft) }}
+{{ $s.SetInMap "item" "permalink" .Permalink }}
+{{ $s.SetInMap "item" "relpermalink" .RelPermalink }}
+
+{{ $uniqueID := partial "tnd-search/private/GetUniqueID" $ }}
+{{ $uniqueIDKey := "id" }}
+{{ with $config.service }}
+	{{ if eq . "algolia" }}
+	{{ $uniqueIDKey = "objectID" }}
+	{{ end }}
+{{ end }}
+
+{{ $s.SetInMap "item" $uniqueIDKey $uniqueID }}
+
+{{ with partialCached "tnd-search/private/GetEntryParams" $ .Params }}
+  {{ range $key, $value := . }}
+    {{ $s.SetInMap "item" $key $value  }}
+  {{ end }}
+{{ end }}
+{{ with partial "tnd-search/AddToEntry" $ }}
+  {{ range $key, $value := . }}
+		{{ $s.SetInMap "item" $key $value  }}
+	{{ end }}
+{{ end }}
+
+{{ return $s.Get "item" }}

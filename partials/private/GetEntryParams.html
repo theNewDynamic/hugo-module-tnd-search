@@ -1,0 +1,14 @@
+{{ $config := partialCached "tnd-search/private/GetConfig" "GetConfig" }}
+{{ $s := newScratch }}
+{{ $s.Set "params" dict }}
+{{ with $config.params }}
+  {{ range $key := . }}
+    {{ with index $.Params $key }}
+      {{ $s.SetInMap "params" $key . }}
+    {{ end }}
+  {{ end }}
+{{ else }}
+  {{ $s.Set "params" $.Params }}
+{{ end }}
+
+{{ return $s.Get "params" }}

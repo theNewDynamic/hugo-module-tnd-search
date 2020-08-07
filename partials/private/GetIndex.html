@@ -1,0 +1,7 @@
+{{ $index := slice }}
+{{ range partial "tnd-search/GetEntries" "GetEntries" }}
+  {{ with partial "tnd-search/private/GetEntry" . }}
+  {{ $index = $index | append . }}
+  {{ end }}
+{{ end }}
+{{ return $index }}

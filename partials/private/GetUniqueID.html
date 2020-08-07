@@ -1,0 +1,9 @@
+{{ $id := "" }}
+{{ with $.File }}
+  {{ $id = print .Lang "_" .Path }}
+{{ else }}
+  {{ $id = .RelPermalink }}
+{{ end }}
+{{ $id = $id | md5 }}
+
+{{ return $id }}
