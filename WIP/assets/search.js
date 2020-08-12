@@ -1,3 +1,5 @@
+import { entry } from './templates/entry.js';
+
 const input = document.getElementById('tnd-search-input');
 const container = document.getElementById('tnd-search-results')
 if(input) {
@@ -18,7 +20,7 @@ function tnd_search(e) {
   )
   container.innerHTML = ''
   results.data.items.forEach(item => {
-    container.innerHTML += `<li><a href="${item.relpermalink}">${item.title}</a></li>`;
+    container.innerHTML += entry(item)
   });
  
   

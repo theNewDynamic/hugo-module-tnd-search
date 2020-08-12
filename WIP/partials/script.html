@@ -12,6 +12,7 @@
 {{ with $dataJS }}
   <script src="{{ .RelPermalink }}"></script>
   {{ with resources.Get "tnd-search/search.js" }}
-  <script defer src="{{ .RelPermalink }}"></script>
+  {{ $search := . | js.Build (dict "target" "es2016") }}
+  <script type="module" defer src="{{ $search.RelPermalink }}"></script>
   {{ end }}
 {{ end }}

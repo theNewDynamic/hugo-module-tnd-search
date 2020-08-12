@@ -1,7 +1,25 @@
+{{/*
+  GetIndex
+  Returns collection of entries as an array
+
+  @author @regisphilibert
+
+  @context Any
+
+  @use
+    - tnd-search/private/GetEntries
+    - tnd-search/private/GetEntry
+
+  @access private
+
+  @example - Go Template
+    {{ partialCached "tnd-search/private/GetIndex" "GetIndex" | jsonify }}
+*/}}
 {{ $index := slice }}
-{{ range partial "tnd-search/GetEntries" "GetEntries" }}
+{{ range partial "tnd-search/private/GetEntries" "GetEntries" }}
   {{ with partial "tnd-search/private/GetEntry" . }}
-  {{ $index = $index | append . }}
+    {{ $index = $index | append . }}
   {{ end }}
 {{ end }}
+
 {{ return $index }}

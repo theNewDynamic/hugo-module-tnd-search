@@ -1,20 +1,13 @@
 module:
   hugoVersion:
-    min: "0.61.0"
+    min: "0.60.0"
   mounts:
   - source: layouts
     target: layouts
-  - source: assets
-    target: assets/tnd-search
+  - source: layouts/single.tnd_search.json
+    target: layouts/_default/single.tnd_search.json
   - source: partials
     target: layouts/partials/tnd-search
-  - source: console
-    target: layouts/partials/tnd-search
-  imports:
-    - path: github.com/itemsapi/itemsjs
-      mounts:
-        - source: dist
-          target: assets/tnd-search/vendors
 outputFormats:
   tnd_search:
     baseName: tnd_search_index

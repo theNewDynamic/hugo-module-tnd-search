@@ -1,3 +1,22 @@
+{{/*
+  Returns the a map with a key/value found page's .Params. Selected parameters set from module's config or all found.
+
+  @author @regisphilibert
+
+  @context Page (.)
+
+  @return Map
+
+  @use
+   - tnd-search/private/GetConfig
+
+  @access private
+
+  @example - Go Template
+    {{ with partialCached "tnd-search/private/GetEntryParams" $ .Params }}
+      [...]
+    {{ end }}
+*/}}
 {{ $config := partialCached "tnd-search/private/GetConfig" "GetConfig" }}
 {{ $s := newScratch }}
 {{ $s.Set "params" dict }}

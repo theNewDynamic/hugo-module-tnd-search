@@ -1,16 +1,31 @@
 {{/*
-	Default Transformer
+	GetEntry
+	Return the data for one entry and apply user's customized data/entry on top it.
 
 	@author @regisphilibert
 
-	@context (Page) .
+	@context Page (.)
 
 	@return Map of the page's transformed data
+		String (.title)
+		Date (.created)
+		Date (.updated)
+		String (.type)
+		Bool (.draft)
+		String (.permalink)
+		String (.relpermalink)
+		String (.objectID|.id)
+		...Params
+		...data/entry
+
+	@use 
+		- tnd-search/private/GetConfig
+		- tnd-search/private/GetUniqueID
+		- tnd-search/private/GetEntryParams
+		- tnd-search/data/entry
 
 	@access private
 
-	@example - Go Template
-		{{ partial"transformers/default" . }}
 */}}
 {{ $s := newScratch }}
 {{ $config := partialCached "tnd-search/private/GetConfig" "GetConfig" }}
@@ -24,7 +39,6 @@
 {{ $s.SetInMap "item" "updated" . }}
 {{ end }}
 
-{{/* Others */}}
 {{ $s.SetInMap "item" "type" .Type }}
 {{ $s.SetInMap "item" "draft" (default false .Draft) }}
 {{ $s.SetInMap "item" "permalink" .Permalink }}
@@ -45,7 +59,7 @@
     {{ $s.SetInMap "item" $key $value  }}
   {{ end }}
 {{ end }}
-{{ with partial "tnd-search/AddToEntry" $ }}
+{{ with partial "tnd-search/data/entry" $ }}
   {{ range $key, $value := . }}
 		{{ $s.SetInMap "item" $key $value  }}
 	{{ end }}
