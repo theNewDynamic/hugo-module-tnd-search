@@ -18,6 +18,7 @@
     {{ end }}
 */}}
 {{ $config := partialCached "tnd-search/private/GetConfig" "GetConfig" }}
+
 {{ $s := newScratch }}
 {{ $s.Set "params" dict }}
 {{ with $config.params }}
@@ -27,7 +28,12 @@
     {{ end }}
   {{ end }}
 {{ else }}
-  {{ $s.Set "params" $.Params }}
+  {{ $exclude := slice "iscjklanguage" "menus" "outputs" "aliases" "_build" "url" }}
+  {{ range $key, $v := $.Params }}
+    {{ if not (in $exclude $key) }}
+      {{ $s.SetInMap "params" $key . }}
+    {{ end }}
+  {{ end }}
 {{ end }}
 
 {{ return $s.Get "params" }}
