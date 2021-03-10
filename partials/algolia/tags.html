@@ -1,0 +1,13 @@
+{{ with resources.Get "/tnd-search/algolia/index.jsx" }}
+  {{ $defines := dict "process.env.NODE_ENV" `"development"`}}
+  {{ $config := partialCached "tnd-search/private/GetConfig" "GetConfig" }}
+  {{ with $config.settings }}
+
+    {{ $settings := jsonify . }}
+
+    {{ $defines = merge $defines (dict "tndConfig" (printf `'%s'` $settings)) }}
+  {{ end }}
+  {{ $js := . | js.Build (dict "target" "es2015" "defines" $defines)}}
+  
+  <script type="text/javascript" src="{{ $js.RelPermalink }}" crossorigin="anonymous" defer></script>
+{{ end }}
