@@ -1,7 +1,6 @@
 module.exports = function widgetSettings(widget) {
   const hitsTemplates = require('./templates.jsx').hits
-  const id = widget.name.toLowerCase()
-  const container = `#${id}`
+  const container = require('./widgetGetContainer.jsx')(widget)
   let settings = {
     container,
     cssClasses: widget.classes,
@@ -11,6 +10,14 @@ module.exports = function widgetSettings(widget) {
     settings = {
       ...settings,
       placeholder: widget.placeholder ? widget.placeholder : 'Search'
+    }
+  }
+
+  if(widget.name == 'refinementList') {
+    
+    settings = {
+      ...settings,
+      attribute: widget.attribute
     }
   }
 

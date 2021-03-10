@@ -1,4 +1,4 @@
 module.exports = function widgetExists(widget){
-  const id = widget.name.toLowerCase()
-  return document.getElementById(id)
+  let selector = require('./widgetGetContainer.jsx')(widget)
+  return document.querySelector(selector)
 }
