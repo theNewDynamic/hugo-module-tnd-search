@@ -3,16 +3,15 @@ import instantsearch from 'instantsearch.js';
 import * as algoliaWidgets from 'instantsearch.js/es/widgets';
 import { tnd_config } from '@params'
 
-const config = tnd_config
-const searchClient = algoliasearch(config.appid, config.apikey);
+const searchClient = algoliasearch(tnd_config.appid, tnd_config.apikey);
 
 const search = instantsearch({
-  indexName: config.indexname,
+  indexName: tnd_config.indexname,
   searchClient,
 });
 
 let widgets = []
-config.widgets.forEach(widget => {
+tnd_config.widgets.forEach(widget => {
   const widgetExist = require('./widgetExists.jsx')(widget)
   if(widgetExist){
     widgets.push(

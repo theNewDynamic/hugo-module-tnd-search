@@ -5,7 +5,7 @@
   {{ with partialCached "tnd-search/private/algolia/GetConfig" "algolia/GetConfig" }}
     {{ $params = dict "tnd_config" . }}
   {{ end }}
-  {{ $js = . | js.Build (dict "target" "es2015" "defines" $defines "params" $params)}}
+  {{ $js = . | js.Build (dict "target" "es2015" "defines" $defines "params" $params "sourceMap" "inline")}}
   {{ if eq (getenv "HUGO_ENV") "production" }}
     {{ $js = $js | minify }}
   {{ end }}
