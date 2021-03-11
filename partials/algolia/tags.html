@@ -1,15 +1,3 @@
-{{ with resources.Get "/tnd-search/algolia/index.jsx" }}
-  {{ $defines := dict "process.env.NODE_ENV" `"development"`}}
-  {{ $config := partialCached "tnd-search/private/GetConfig" "GetConfig" }}
-  {{ with $config.algolia }}
-
-    {{ $settings := jsonify . }}
-
-    {{ $defines = merge $defines (dict "tndConfig" (printf `'%s'` $settings)) }}
-  {{ end }}
-  {{ $js := . | js.Build (dict "target" "es2015" "defines" $defines)}}
-  {{ if eq (getenv "HUGO_ENV") "production" }}
-    {{ $js = $js | minify }}
-  {{ end }}
-  <script type="text/javascript" src="{{ $js.RelPermalink }}" crossorigin="anonymous" defer></script>
+{{ with partialCached "tnd-search/private/algolia/GetProcessedAssets" "GetProcessedAssets" }}
+<script type="text/javascript" src="{{ .RelPermalink }}" crossorigin="anonymous" defer></script>
 {{ end }}

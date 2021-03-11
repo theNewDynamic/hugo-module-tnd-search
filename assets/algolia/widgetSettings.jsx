@@ -1,10 +1,9 @@
 module.exports = function widgetSettings(widget) {
-  const hitsTemplates = require('./templates.jsx').hits
   const container = require('./widgetGetContainer.jsx')(widget)
   let settings = {
     container,
     cssClasses: widget.classes,
-    templates: widget.name == 'hits' ? hitsTemplates : {}
+    templates: widget.templates ? widget.templates : {}
   }
   if(widget.name == 'searchBox') {
     settings = {

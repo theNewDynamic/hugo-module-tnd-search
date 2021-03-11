@@ -1,0 +1,14 @@
+{{ $js := dict }}
+{{ with resources.Get "/tnd-search/algolia/index.jsx" }}
+  {{ $defines := dict "process.env.NODE_ENV" `"development"`}}
+  {{ $params := dict }}
+  {{ with partialCached "tnd-search/private/algolia/GetConfig" "algolia/GetConfig" }}
+    {{ $params = dict "tnd_config" . }}
+  {{ end }}
+  {{ $js = . | js.Build (dict "target" "es2015" "defines" $defines "params" $params)}}
+  {{ if eq (getenv "HUGO_ENV") "production" }}
+    {{ $js = $js | minify }}
+  {{ end }}
+{{ end }}
+
+{{ return $js }}

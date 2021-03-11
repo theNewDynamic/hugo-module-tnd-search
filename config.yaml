@@ -8,6 +8,8 @@ module:
     target: layouts/_default/single.tnd_search.json
   - source: partials
     target: layouts/partials/tnd-search
+  - source: console
+    target: layouts/partials/tnd-search
   - source: assets
     target: assets/tnd-search
   imports:
