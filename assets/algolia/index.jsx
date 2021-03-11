@@ -13,9 +13,11 @@ const search = instantsearch({
 let widgets = []
 tnd_config.widgets.forEach(widget => {
   if(widget.js) {
-    widget = {
-      ...widget,
-      ...projectWidgets[widget.js]
+    if(projectWidgets[widget.js] !== 'undefined'){
+      widget = {
+        ...widget,
+        ...projectWidgets[widget.js]
+      }
     }
   }
   const widgetExist = require('./widgetExists.jsx')(widget)
