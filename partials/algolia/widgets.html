@@ -1,0 +1,27 @@
+{{/*
+  widgets
+  Prints HTML elements given the Module's registered Algolia widgets's container. (only if not set or starting with #)
+
+  @author @regisphilibert
+
+  @context Any (.)
+
+  @access private
+
+  @returns Template
+
+  @uses
+     - tnd-search/private/algolia/GetConfig
+     - tnd-search/private/algolia/GetHTMLElement
+
+  @example - Go Template
+    {{ partial "tnd-search/algolia/widgets" }}
+*/}}
+{{ $config := partialCached "tnd-search/private/algolia/GetConfig" "algolia/GetConfig" }}
+{{ $id_pattern := `#([a-z\-]*)` }}
+{{ $class_pattern := `.([a-z\-]*)` }}
+{{ with $config.widgets }}
+  {{ range . }}
+    {{ partial "tnd-search/private/algolia/GetHTMLElement" . }}
+  {{ end }}
+{{ end }}

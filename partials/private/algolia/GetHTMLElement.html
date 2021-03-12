@@ -1,0 +1,26 @@
+{{/*
+  GetHTMLElement
+  Create HTML Element string from a widget container
+
+  @author @regisphilibert
+
+  @context Map (.)
+
+  @access private
+
+  @returns String
+*/}}
+{{ $id_pattern := `#([a-z\-]*)` }}
+{{ $class_pattern := `.([a-z\-]*)` }}
+{{ $id := print .name | lower }}
+{{ with .container }}
+  {{ if findRE $id_pattern . }}
+    {{ with replaceRE $id_pattern "$1" . }}
+    {{ $id = . }}
+    {{ end }}
+  {{ else }}
+    {{ partial "tnd-search/warn" (printf "tnd-search/components partial can only generate container with an ID pattern. Either fix %s's container (%s) or add HTML elements to templates yourself." $.name .) }}
+  {{ end }}
+{{ end }}
+
+{{ return (printf `<div id="%s"></div>` $id | safeHTML) }}
