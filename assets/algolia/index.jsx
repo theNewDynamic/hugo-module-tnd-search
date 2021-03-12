@@ -14,9 +14,14 @@ if(tnd_config.startempty) {
   settings = {
     ...settings,
     searchFunction(helper) {
-      if (helper.state.query) {
-        helper.search();
+      if (helper.state.query === '') {
+        // empty query string -> hide the search results & abort the search
+        document.body.classList.add('tnd-search-empty-query')
+        return;
+      } else {
+        document.body.classList.remove('tnd-search-empty-query')
       }
+      helper.search();
     },
   }
 }
