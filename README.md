@@ -1,18 +1,15 @@
 # TND Search Hugo Module
 
-In the future, this module will serve the two following purposes:
+This module serve the two following purposes:
 
-1. Produce an index endpoint on your site
-2. Produce the JS searchs script for several services.
-
-For now, only 1. is addressed.
+- [x] Phase 1: Produce an index endpoint on your site
+- [ ] Phase 2: Produce the JS front end search.
 
 ## Requirements
 
 Requirements:
 - Go 1.14
-- Hugo 0.61.0
-
+- Hugo 0.60.0
 
 ## Quick setup
 
