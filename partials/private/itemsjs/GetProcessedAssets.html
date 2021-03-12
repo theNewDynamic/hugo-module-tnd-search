@@ -1,0 +1,7 @@
+{{ $data := partialCached "tnd-search/private/GetIndex" "GetIndex" }}
+{{ $defines := dict "process.env.NODE_ENV" `"development"`}}
+{{ with resources.Get "tnd-search/itemsjs/index.js" }}
+  {{ $params := dict "tnd_search_data" $data }}
+  {{ $search := . | js.Build (dict "target" "es2016" "defines" $defines "params" $params "sourceMap" "inline") }}
+  <script type="module" defer src="{{ $search.RelPermalink }}"></script>
+{{ end }}

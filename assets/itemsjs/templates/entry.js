@@ -1,3 +1,3 @@
 export function entry(item) {
-  return `<li><a href="${item.relpermalink}">${item.title}</a></li>`
+  return `<a class="block my-4 border border-red-500 p-2" href="${item.relpermalink}">${item.title} | ${item.type}</a>`
 }
