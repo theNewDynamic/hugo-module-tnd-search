@@ -13,10 +13,10 @@ const search = instantsearch({
 let widgets = []
 tnd_config.widgets.forEach(widget => {
   if(widget.js) {
-    if(projectWidgets[widget.js] !== 'undefined'){
+    if(tndAgoliaWidgets[widget.js] !== 'undefined'){
       widget = {
         ...widget,
-        ...projectWidgets[widget.js]
+        ...tndAgoliaWidgets[widget.js]
       }
     }
   }

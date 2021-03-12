@@ -46,10 +46,8 @@
 
 {{ $uniqueID := partial "tnd-search/private/GetUniqueID" $ }}
 {{ $uniqueIDKey := "id" }}
-{{ with $config.service }}
-	{{ if eq . "algolia" }}
+{{ with $config.agolia }}
 	{{ $uniqueIDKey = "objectID" }}
-	{{ end }}
 {{ end }}
 
 {{ $s.SetInMap "item" $uniqueIDKey $uniqueID }}

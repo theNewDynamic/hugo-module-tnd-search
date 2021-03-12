@@ -49,6 +49,7 @@ homepage:
   - tnd_search
   # + any other outputs needed on the homepage.
 ```
+# Backend
 
 ## Building the index
 
@@ -145,6 +146,93 @@ tnd_search:
 #### service (string)
 
 If `algolia` is set the `objectID` key will be added to every entry.
+
+# FrontEnd
+
+## Using Algolia
+
+### App Settings
+
+```yaml
+tnd_search:
+  algolia:
+    indexName: default
+    appId: GMXXXXXXXQW
+    apiKey: 027xxxxxxxxxxxxxxxxxxxxxxxxx53e
+```
+
+### Registering Components
+
+Each components must be 
+1. registered in the module using the methods described below.
+2. Added to your template with an id matching its lowercase `name` parameter or optional `container` parameter
+
+#### Register widgets settings
+
+Components option keys are matching Aloglia's own except for `cssClasses` which is shorttened to `classes`.
+
+For example, in order to add a simple Search Box and Hits:
+
+```yaml
+tnd_search:
+  widgets:
+  - name: searchBox
+    placeholder: 'Search now!'
+    classes:
+      root: 'search__box mb-8'
+      input: 'bg-transparent border-none w-full text-3xl'
+  - name: hits
+    classes:
+      root: 'bg-white'
+      list: 'list-reset'
+```
+
+Templates can also be customized through yaml using the componenent available keys:
+
+```yaml
+- name: hits
+  classes:
+    root: 'bg-white'
+    list: 'list-reset'
+  templates:
+    item: |
+      <a class="flex justify-between border border-red-500 mb-4 px-8 py-2" href="{{ relpermalink }}">
+        <div>{{#helpers.highlight}}{ "attribute": "title" }{{/helpers.highlight}}</div>
+        <div>{{ type }}</div>
+      </a>
+    empty: |
+      <span class="block border-b border-black px-8 py-2">No results</span>
+```
+
+#### Complementing options through Javascript
+
+Many options are better handled through Javascript. In order to use javascript language to complement your widget options you need to:
+
+1. Create a javascript file at `/assets/tnd-search/algolia/widgets.js` which export a `tndAgoliaWidgets` variable as such:
+
+```js
+export let tndAgoliaWidgets = {
+  hitsCustom: {
+    transformItems(items) {
+      return items.map(item => ({
+        ...item,
+        type: item.type.toUpperCase(),
+      }));
+    },
+  }
+}
+```
+
+2 add a `js` key to your component yaml regisrering with a value matching a `tndAlgoliaWidgets` key.
+
+```yaml
+- name: hits
+  [...]
+  js: hitsCustom
+```
+
+
+
 
 ## theNewDynamic
 
