@@ -208,7 +208,7 @@ Many options are better handled through Javascript. In order to use javascript l
 1. Create a javascript file at `/assets/tnd-search/algolia/widgets.js` which export a `tndAgoliaWidgets` variable as such:
 
 ```js
-export let tndAgoliaWidgets = {
+export let tndAlgoliaWidgets = {
   hitsCustom: {
     transformItems(items) {
       return items.map(item => ({
