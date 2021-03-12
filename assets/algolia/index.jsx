@@ -5,10 +5,22 @@ import { tnd_config } from '@params'
 
 const searchClient = algoliasearch(tnd_config.appid, tnd_config.apikey);
 
-const search = instantsearch({
+let settings = {
   indexName: tnd_config.indexname,
   searchClient,
-});
+}
+
+if(tnd_config.startempty) {
+  settings = {
+    ...settings,
+    searchFunction(helper) {
+      if (helper.state.query) {
+        helper.search();
+      }
+    },
+  }
+}
+const search = instantsearch(settings);
 
 let widgets = []
 tnd_config.widgets.forEach(widget => {
