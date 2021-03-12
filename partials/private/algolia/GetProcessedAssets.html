@@ -1,15 +1,25 @@
 {{ $js := dict }}
 {{ with resources.Get "/tnd-search/algolia/index.jsx" }}
+  {{/* Defines */}}
   {{ $defines := dict "process.env.NODE_ENV" `"development"`}}
+
+  {{/* Parameters found in Module Algolia configuration */}}
   {{ $params := dict }}
   {{ with partialCached "tnd-search/private/algolia/GetConfig" "algolia/GetConfig" }}
     {{ $params = dict "tnd_config" . }}
   {{ end }}
+
+  {{/* Two files, if found allow injection at js.Build process */}}
   {{ $inject := slice }}
-  {{ with resources.Get "/tnd-search/algolia/widgets.js" }}
-    {{ $inject = $inject | append "tnd-search/algolia/widgets.js" }}
+  {{ range $file := slice "tnd-search/algolia/widgets.js" "tnd-search/algolia/settings.js" }}
+    {{ with resources.Get . }}
+      {{ $inject = $inject | append $file }}
+    {{ end }}
   {{ end }}
-  {{ $js = . | js.Build (dict "target" "es2015" "defines" $defines "params" $params "sourceMap" "inline" "inject" $inject)}}
+
+  {{ $options := dict "target" "es2015" "defines" $defines "params" $params "sourceMap" "inline" "inject" $inject }}
+  {{ $js = . | js.Build $options }}
+  
   {{ if eq (getenv "HUGO_ENV") "production" }}
     {{ $js = $js | minify }}
   {{ end }}
