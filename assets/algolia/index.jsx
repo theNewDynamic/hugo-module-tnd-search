@@ -38,10 +38,11 @@ if(tnd_config.startempty) {
     },
   }
 }
+
+
 // if tndAlgoliaSettings object export is found at /assets/tnd-search/algolia/settings.js 
 // we spread its content on top of current settings.
 if(tndAlgoliaSettings){
-  console.log(typeof tndAlgoliaSettings)
   settings = {
     ...settings,
     ...tndAlgoliaSettings
@@ -52,12 +53,12 @@ const search = instantsearch(settings);
 let widgets = []
 tnd_config.widgets.forEach(widget => {
   if(widget.js) {
-    // if tndAgoliaWidgets object export is found at /assets/tnd-search/algolia/widgets.js 
+    // if tndAlgoliaWidgets object export is found at /assets/tnd-search/algolia/widgets.js 
     // we spread its content on top of current widget settings.
-    if(tndAgoliaWidgets[widget.js] !== 'undefined'){
+    if(tndAlgoliaWidgets[widget.js] !== 'undefined'){
       widget = {
         ...widget,
-        ...tndAgoliaWidgets[widget.js]
+        ...tndAlgoliaWidgets[widget.js]
       }
     }
   }
@@ -70,6 +71,12 @@ tnd_config.widgets.forEach(widget => {
     console.log(`No ${widget.name}`)
   }
 });
+
+if(tnd_config.hitsperpage){
+  widgets.push(algoliaWidgets.configure({
+      hitsPerPage: tnd_config.hitsperpage,
+  }))
+}
 
 search.addWidgets(widgets);
 

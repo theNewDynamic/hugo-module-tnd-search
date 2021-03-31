@@ -205,7 +205,7 @@ Templates can also be customized through yaml using the componenent available ke
 
 Many options are better handled through Javascript. In order to use javascript language to complement your widget options you need to:
 
-1. Create a javascript file at `/assets/tnd-search/algolia/widgets.js` which export a `tndAgoliaWidgets` variable as such:
+1. Create a javascript file at `/assets/tnd-search/algolia/widgets.js` which export a `tndAlgoliaWidgets` variable as such:
 
 ```js
 export let tndAlgoliaWidgets = {

@@ -46,7 +46,7 @@
 
 {{ $uniqueID := partial "tnd-search/private/GetUniqueID" $ }}
 {{ $uniqueIDKey := "id" }}
-{{ with $config.agolia }}
+{{ with $config.algolia }}
 	{{ $uniqueIDKey = "objectID" }}
 {{ end }}
 
