@@ -44,7 +44,7 @@ if(tnd_config.startempty) {
 
 // if tndAlgoliaSettings object export is found at /assets/tnd-search/algolia/settings.js 
 // we spread its content on top of current settings.
-if(tndAlgoliaSettings){
+if(typeof tndAlgoliaSettings !== "undefined"){
   settings = {
     ...settings,
     ...tndAlgoliaSettings
