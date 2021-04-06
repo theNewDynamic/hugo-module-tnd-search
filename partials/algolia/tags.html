@@ -1,3 +1,7 @@
-{{ with partialCached "tnd-search/private/algolia/GetProcessedAssets" "GetProcessedAssets" }}
+{{- $config := partialCached "tnd-search/private/GetConfig" "GetConfig" -}}
+{{- with partialCached "tnd-search/private/algolia/GetProcessedAssets" "GetProcessedAssets" -}}
 <script type="text/javascript" src="{{ .RelPermalink }}" crossorigin="anonymous" defer></script>
-{{ end }}
+  {{- with $config.algolia.appid }}
+<link rel="preconnect" href="https://{{ . }}-dsn.algolia.net/" crossorigin>
+  {{- end -}}
+{{- end -}}
