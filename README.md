@@ -3,7 +3,8 @@
 This module serve the two following purposes:
 
 - [x] Phase 1: Produce an index endpoint on your site
-- [ ] Phase 2: Produce the JS front end search.
+- [x] Phase 2: Produce the JS front end search with Algolia.
+- [ ] Phase 3: Produce the JS front end search with other services
 
 ## Requirements
 
