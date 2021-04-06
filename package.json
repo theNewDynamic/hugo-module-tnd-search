@@ -1,0 +1,33 @@
+{
+ "author": "theNewDynamic",
+ "bugs": {
+  "url": "https://github.com/theNewDynamic/hugo-module-tnd-search/issues"
+ },
+ "comments": {
+  "dependencies": {},
+  "devDependencies": {
+   "algoliasearch": "project",
+   "instantsearch.js": "project"
+  }
+ },
+ "dependencies": {},
+ "description": "Hugo Module to handle Search from back to front",
+ "devDependencies": {
+  "algoliasearch": "^4.8.6",
+  "instantsearch.js": "^4.17.0"
+ },
+ "homepage": "https://github.com/theNewDynamic/hugo-module-tnd-search#readme",
+ "keywords": [
+  "hugo",
+  "module",
+  "search",
+  "algolia"
+ ],
+ "license": "MIT",
+ "name": "hugo-module-tnd-search",
+ "repository": {
+  "type": "git",
+  "url": "git+https://github.com/theNewDynamic/hugo-module-tnd-search.git"
+ },
+ "version": "0.1.4"
+}
