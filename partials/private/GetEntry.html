@@ -51,12 +51,14 @@
 {{ end }}
 
 {{ $s.SetInMap "item" $uniqueIDKey $uniqueID }}
-
-{{ with partialCached "tnd-search/private/GetEntryParams" $ .Params }}
-  {{ range $key, $value := . }}
-    {{ $s.SetInMap "item" $key $value  }}
-  {{ end }}
+{{ with $.Params }}
+	{{ with partialCached "tnd-search/private/GetEntryParams" $ . }}
+		{{ range $key, $value := . }}
+			{{ $s.SetInMap "item" $key $value }}
+		{{ end }}
+	{{ end }}
 {{ end }}
+
 {{ with partial "tnd-search/data/entry" $ }}
   {{ range $key, $value := . }}
 		{{ $s.SetInMap "item" $key $value  }}
