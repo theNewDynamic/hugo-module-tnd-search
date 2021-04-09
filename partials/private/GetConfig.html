@@ -19,5 +19,8 @@
 {{ with site.Params.tnd_search }}
   {{ $config = . }}
 {{ end }}
+{{ with site.Data.tnd_search }}
+  {{ $config = merge $config . }}
+{{ end }}
 
 {{ return $config }}

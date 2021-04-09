@@ -1,0 +1,62 @@
+{{/*
+  GetScripts
+  Retrieves the list of scripts available from config based on given slice of strings matching config name
+
+  @author @regisphilibert
+
+  @context Slice of Strings (.)
+
+  @access private
+
+  @returns Resource
+
+  @uses
+     - tnd-search/private/GetConfig
+     - tnd-search/private/algolia/GetProcessedAsset
+*/}}
+
+{{ $scripts := slice }}
+
+{{ $scripts_configs := slice }}
+
+{{ $script_names := slice "default" }}
+{{ if reflect.IsSlice $ }}
+  {{ $script_names = . }}
+{{ end }}
+
+{{ $config := partialCached "tnd-search/private/GetConfig" "GetConfig" }}
+{{ with $registered_scripts := $config.algolia }}
+  {{/* We support legacy config structure by appending a name key (default) if we find
+    a lone map in place of a slice of maps */}}
+  {{ if reflect.IsMap . }}
+    {{ $scripts_configs = slice (merge (dict "name" "default") .) }}
+  {{ else if reflect.IsSlice . }}
+    {{/* For modern structure we find scripts whose name matched those passed through the context slice */}}
+    {{ range $script_name := $script_names }}
+      {{ with where $registered_scripts ".name" $script_name }}
+        {{ with index . 0 }}
+          {{ $scripts_configs = $scripts_configs | append . }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* We range on found script config */}}
+{{ range $script_config := $scripts_configs }}
+  {{/* First making sure mandatory settings are set */}}
+  {{ range $key := slice "appid" "apikey" "indexname" }}
+    {{ if not (index $script_config .) }}
+      {{ partial "tnd-search/warn" (printf "In order to use Algolia, you need to set a %s parameter to %s" . $script_config.name) }}
+    {{ end }}
+  {{ end }}
+
+  {{/* Then we process a the config through the common index.jsx */}}
+  {{ with partialCached "tnd-search/private/algolia/GetProcessedAsset" $script_config $script_config }}
+    {{ $scripts = $scripts | append . }}
+  {{ end }}
+{{ end }}
+
+
+
+{{ return $scripts }}

@@ -5,10 +5,16 @@ import { simple as simpleMapping } from 'instantsearch.js/es/lib/stateMappings';
 import * as algoliaWidgets from 'instantsearch.js/es/widgets';
 import { tnd_config } from '@params'
 
-const searchClient = algoliasearch(tnd_config.appid, tnd_config.apikey);
+
+// Depending if user uses Data file or Params for config, casing won't be consistent...
+const indexName = typeof tnd_config.indexName != "undefined" ? tnd_config.indexName : tnd_config.indexname
+const appId = typeof tnd_config.appId != "undefined" ? tnd_config.appId : tnd_config.appid
+const apiKey = typeof tnd_config.apiKey != "undefined" ? tnd_config.apiKey : tnd_config.apikey
+
+const searchClient = algoliasearch(appId, apiKey);
 
 let settings = {
-  indexName: tnd_config.indexname,
+  indexName,
   searchClient,
 
 }

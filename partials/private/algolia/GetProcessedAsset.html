@@ -1,0 +1,58 @@
+{{/*
+  GetProcessedAsset
+  Process a script configuration and returns a Resource built with index.jsx
+
+  @author @regisphilibert
+
+  @context Map (.)
+
+  @access private
+
+  @returns Resource
+
+  @uses
+     - partial
+
+  @example - Go Template
+    {{ with partialCached "GetProcessedAsset" context context }}
+      {{ something = . }}
+    {{ end }}
+*/}}
+{{ $js := dict }}
+{{ $script_config := $ }}
+{{ with resources.Get "/tnd-search/algolia/index.jsx" }}
+  {{/* Defines */}}
+  {{ $env := "development" }}
+  {{ $not_dev := ne (getenv "HUGO_ENV") "development" }}
+  {{ $not_server := not site.IsServer }}
+  {{ if and $not_dev $not_server }}
+    {{ $env = "production" }}
+  {{ end }}
+  {{ $defines := dict "process.env.NODE_ENV" (printf `"%s"` $env) }}
+
+  {{/* Parameters found in Module Algolia configuration */}}
+  {{ $params := dict "tnd_config" $script_config }}
+
+  {{/* Two files, if found allow injection at js.Build process */}}
+  {{ $inject := slice }}
+  {{ range $file := slice "tnd-search/algolia/widgets.js" "tnd-search/algolia/settings.js" }}
+    {{ with resources.Get . }}
+      {{ $inject = $inject | append $file }}
+    {{ end }}
+  {{ end }}
+  {{ $name := $.name }}
+  {{ $options := dict 
+    "targetPath" (printf "tnd_search/%s.js" $name)
+    "target" "es2015" 
+    "defines" $defines 
+    "params" $params 
+    "sourceMap" "inline" 
+    "inject" $inject }}
+  {{ $js = . | js.Build $options }}
+  
+  {{ if eq (getenv "HUGO_ENV") "production" }}
+    {{ $js = $js | minify }}
+  {{ end }}
+{{ end }}
+
+{{ return $js }}
