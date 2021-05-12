@@ -13,6 +13,7 @@ module:
   - source: assets
     target: assets/tnd-search
   imports:
+    - path: github.com/theNewDynamic/hugo-module-tnd-env
     - path: github.com/itemsapi/itemsjs
       mounts:
         - source: dist

@@ -22,11 +22,12 @@
 {{ $script_config := $ }}
 {{ with resources.Get "/tnd-search/algolia/index.jsx" }}
   {{/* Defines */}}
-  {{ $env := "development" }}
-  {{ $not_dev := ne (getenv "HUGO_ENV") "development" }}
+  {{ $env := partialCached "tnd-env/Get" "Get" }}
+  {{ $minify := false }}
+  {{ $not_dev := partialCached "tnd-env/IsNot" "development" }}
   {{ $not_server := not site.IsServer }}
   {{ if and $not_dev $not_server }}
-    {{ $env = "production" }}
+    {{ $minify = true }}
   {{ end }}
   {{ $defines := dict "process.env.NODE_ENV" (printf `"%s"` $env) }}
 
@@ -46,13 +47,15 @@
     "target" "es2015" 
     "defines" $defines 
     "params" $params 
-    "sourceMap" "inline" 
     "inject" $inject }}
-  {{ $js = . | js.Build $options }}
   
-  {{ if eq (getenv "HUGO_ENV") "production" }}
-    {{ $js = $js | minify }}
+  {{ if $minify }}
+    {{ $options = merge $options (dict "minify" true) }}
+  {{ else }}
+    {{ $options = merge $options (dict "sourceMap" "inline") }}
   {{ end }}
+
+  {{ $js = . | js.Build $options }}
 {{ end }}
 
 {{ return $js }}
