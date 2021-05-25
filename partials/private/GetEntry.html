@@ -45,10 +45,7 @@
 {{ $s.SetInMap "item" "relpermalink" .RelPermalink }}
 
 {{ $uniqueID := partial "tnd-search/private/GetUniqueID" $ }}
-{{ $uniqueIDKey := "id" }}
-{{ with $config.algolia }}
-	{{ $uniqueIDKey = "objectID" }}
-{{ end }}
+{{ $uniqueIDKey := partialCached "tnd-search/private/GetPrimaryKey" "GetPrimaryKey" }}
 
 {{ $s.SetInMap "item" $uniqueIDKey $uniqueID }}
 {{ with $.Params }}

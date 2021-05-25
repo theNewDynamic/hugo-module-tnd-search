@@ -1,0 +1,14 @@
+{{ $primary_key := "id" }}
+{{ with $config := partialCached "tnd-search/private/GetConfig" "GetConfig" }}
+  {{ with .primary_key }}
+    {{ $primary_key = . }}
+  {{ else }}
+    {{ with $config.service }}
+      {{ if eq . "algolia" }}
+        {{ $primary_key = "objectID" }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ return $primary_key }}

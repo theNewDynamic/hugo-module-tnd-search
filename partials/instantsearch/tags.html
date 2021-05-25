@@ -1,4 +1,4 @@
-{{- range partialCached "tnd-search/private/algolia/GetScripts" $ $ -}}
+{{- range partialCached "tnd-search/private/instantsearch/GetScripts" $ $ -}}
 <script type="text/javascript" src="{{ .RelPermalink }}" crossorigin="anonymous" defer></script>
 {{- end }}
 {{ with in $ "preconnect" -}}

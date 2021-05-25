@@ -139,25 +139,41 @@ tnd_search:
     - custom_summary
     - city
     - topics
-  ```
+```
 
 #### service (string)
 
-If `algolia` is set the `objectID` key will be added to every entry.
+Only `algolia` and `meili` are supported.
+
+#### primary_key (string) | default "id" (or "objectID" if service is set to algolia)
+
+When building your index, the module will store a unique idientifier under this reserved key.
+
 
 # FrontEnd
 
-## Using Algolia
+The Module uses [InstantSearch.js](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/js/) to bandle the Front End of the search.
 
 ### App Settings
 
+#### Using Algolia as service:
 ```yaml
 tnd_search:
-  algolia:
+  instantsearch:
     indexName: default
     appId: GMXXXXXXXQW
     apiKey: 027xxxxxxxxxxxxxxxxxxxxxxxxx53e
 ```
+
+#### Using Algolia as service:
+```yaml
+tnd_search:
+  instantsearch:
+    indexName: default
+    appId: https://test.search.ws
+    apiKey: 027xxxxxxxxxxxxxxxxxxxxxxxxx53e
+```
+
 
 ### Registering Components
 
@@ -173,16 +189,17 @@ For example, in order to add a simple Search Box and Hits:
 
 ```yaml
 tnd_search:
-  widgets:
-  - name: searchBox
-    placeholder: 'Search now!'
-    classes:
-      root: 'search__box mb-8'
-      input: 'bg-transparent border-none w-full text-3xl'
-  - name: hits
-    classes:
-      root: 'bg-white'
-      list: 'list-reset'
+  instantsearch:
+    widgets:
+    - name: searchBox
+      placeholder: 'Search now!'
+      classes:
+        root: 'search__box mb-8'
+        input: 'bg-transparent border-none w-full text-3xl'
+    - name: hits
+      classes:
+        root: 'bg-white'
+        list: 'list-reset'
 ```
 
 Templates can also be customized through yaml using the componenent available keys:
@@ -206,7 +223,7 @@ Templates can also be customized through yaml using the componenent available ke
 
 Many options are better handled through Javascript. In order to use javascript language to complement your widget options you need to:
 
-1. Create a javascript file at `/assets/tnd-search/algolia/widgets.js` which export a `tndAlgoliaWidgets` variable as such:
+1. Create a javascript file at `/assets/tnd-search/instantsearch/widgets.js` which export a `tndWidgets` variable as such:
 
 ```js
 export let tndAlgoliaWidgets = {
@@ -221,7 +238,7 @@ export let tndAlgoliaWidgets = {
 }
 ```
 
-2 add a `js` key to your component yaml regisrering with a value matching a `tndAlgoliaWidgets` key.
+2 add a `js` key to your component yaml regisrering with a value matching a `tndWidgets` key.
 
 ```yaml
 - name: hits

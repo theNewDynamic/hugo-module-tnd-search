@@ -11,17 +11,17 @@
   @returns Template
 
   @uses
-     - tnd-search/private/algolia/GetConfig
-     - tnd-search/private/algolia/GetHTMLElement
+     - tnd-search/private/instantsearch/GetConfig
+     - tnd-search/private/instantsearch/GetHTMLElement
 
   @example - Go Template
-    {{ partial "tnd-search/algolia/widgets" }}
+    {{ partial "tnd-search/instantsearch/widgets" }}
 */}}
-{{ $config := partialCached "tnd-search/private/algolia/GetConfig" "algolia/GetConfig" }}
+{{ $config := partialCached "tnd-search/private/instantsearch/GetConfig" "instantsearch/GetConfig" }}
 {{ $id_pattern := `#([a-z\-]*)` }}
 {{ $class_pattern := `.([a-z\-]*)` }}
 {{ with $config.widgets }}
   {{ range . }}
-    {{ partial "tnd-search/private/algolia/GetHTMLElement" . }}
+    {{ partial "tnd-search/private/instantsearch/GetHTMLElement" . }}
   {{ end }}
 {{ end }}

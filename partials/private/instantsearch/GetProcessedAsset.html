@@ -20,7 +20,10 @@
 */}}
 {{ $js := dict }}
 {{ $script_config := $ }}
-{{ with resources.Get "/tnd-search/algolia/index.jsx" }}
+{{ with $service := partialCached "tnd-search/private/GetService" "GetService" }}
+  {{ $script_config = merge $script_config (dict "service" .) }}
+{{ end }}
+{{ with resources.Get "/tnd-search/instantsearch/index.jsx" }}
   {{/* Defines */}}
   {{ $env := partialCached "tnd-env/Get" "Get" }}
   {{ $minify := false }}
@@ -31,12 +34,12 @@
   {{ end }}
   {{ $defines := dict "process.env.NODE_ENV" (printf `"%s"` $env) }}
 
-  {{/* Parameters found in Module Algolia configuration */}}
+  {{/* Parameters found in Module InstantSearch configuration */}}
   {{ $params := dict "tnd_config" $script_config }}
 
   {{/* Two files, if found allow injection at js.Build process */}}
   {{ $inject := slice }}
-  {{ range $file := slice "tnd-search/algolia/widgets.js" "tnd-search/algolia/settings.js" }}
+  {{ range $file := slice "tnd-search/instantsearch/widgets.js" "tnd-search/instantsearch/settings.js" }}
     {{ with resources.Get . }}
       {{ $inject = $inject | append $file }}
     {{ end }}

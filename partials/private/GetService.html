@@ -1,0 +1,7 @@
+{{ $service := "algolia" }}
+{{ with partialCached "tnd-search/private/GetConfig" "GetConfig" }}
+  {{ with .service }}
+    {{ $service = . }}
+  {{ end }}
+{{ end }}
+{{ return $service }}
