@@ -17,11 +17,6 @@ if (tnd_config.service == "algolia") {
   searchClient = algoliasearch(appId, apiKey);
 } else {
   let meiliSettings = {}
-  if (tnd_config.startempty) {
-    meiliSettings = {
-      placeholderSearch: false
-    }
-  }
   searchClient = instantMeiliSearch(appId, apiKey, meiliSettings)
 }
 
@@ -43,22 +38,20 @@ if(tnd_config.routing){
 }
 // If startEmpty is true, we complement settings a custom searchFunction
 if(tnd_config.startempty) {
-  if (tnd_config.service == "algolia") {
-    settings = {
-      ...settings,
-      searchFunction(helper) {
-        if (helper.state.query === '') {
-          // empty query string -> hide the search results & abort the search
-          document.body.classList.add('tnd-search-empty-query')
-          document.body.classList.remove('tnd-search-filled-query')
-          return;
-        } else {
-          document.body.classList.remove('tnd-search-empty-query')
-          document.body.classList.add('tnd-search-filled-query')
-        }
-        helper.search();
-      },
-    }
+  settings = {
+    ...settings,
+    searchFunction(helper) {
+      if (helper.state.query === '') {
+        // empty query string -> hide the search results & abort the search
+        document.body.classList.add('tnd-search-empty-query')
+        document.body.classList.remove('tnd-search-filled-query')
+        return;
+      } else {
+        document.body.classList.remove('tnd-search-empty-query')
+        document.body.classList.add('tnd-search-filled-query')
+      }
+      helper.search();
+    },
   }
 }
 
