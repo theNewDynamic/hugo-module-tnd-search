@@ -11,6 +11,7 @@ import { tnd_config } from '@params'
 const indexName = typeof tnd_config.indexName != "undefined" ? tnd_config.indexName : tnd_config.indexname
 const appId = typeof tnd_config.appId != "undefined" ? tnd_config.appId : tnd_config.appid
 const apiKey = typeof tnd_config.apiKey != "undefined" ? tnd_config.apiKey : tnd_config.apikey
+const startEmpty = typeof tnd_config.startEmpty != "undefined" ? tnd_config.startEmpty : tnd_config.startempty
 
 let searchClient
 if (tnd_config.service == "algolia") {
@@ -37,7 +38,7 @@ if(tnd_config.routing){
   }
 }
 // If startEmpty is true, we complement settings a custom searchFunction
-if(tnd_config.startempty) {
+if(startEmpty) {
   settings = {
     ...settings,
     searchFunction(helper) {
@@ -87,12 +88,26 @@ tnd_config.widgets.forEach(widget => {
     console.log(`No ${widget.name}`)
   }
 });
-
-if(tnd_config.hitsperpage){
-  widgets.push(instantWidgets.configure({
-      hitsPerPage: tnd_config.hitsperpage,
-  }))
-}
+//  attributesToSnippet: ['description:50'],
+//snippetEllipsisText: '...',
+let configure = {}
+const allowedSettings = [
+  "hitsPerPage",
+  "distinct",
+  "clickAnalytics",
+  "enablePersonalization",
+  "attributesToSnippet",
+  "snippetEllipsisText"
+]
+allowedSettings.map(item => {
+  if(typeof tnd_config[item] !== "undefined"){
+    return configure = {
+      ...configure,
+      [item]: tnd_config[item]
+    }
+  }
+})
+widgets.push(instantWidgets.configure(configure))
 
 search.addWidgets(widgets);
 

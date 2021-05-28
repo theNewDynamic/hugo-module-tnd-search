@@ -154,30 +154,46 @@ When building your index, the module will store a unique idientifier under this 
 
 The Module uses [InstantSearch.js](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/js/) to bandle the Front End of the search.
 
-### App Settings
+## Usage
+
+### tnd-search/instantsearch/tags
+
+This partial is to be loaded in your template to invoke the script(s). It takes a slice as parameter listing the scripts by their names. Anything but a slice as parameter will load all the scripts.
+
+```
+{{ partial "tnd-search/instantsearch/tags" (slice "default" "videos") }}
+```
+### Registering search scripts
+
+As the module supports multiple search integration (one for your video gallery, one for your main site search etc...). The `instansearch` key of the module settings takes a list of scripts with their own settings.
+
+The `name` key defines the value by which they will be identified when using the `tnd-search/instantsearch/tags` partial.
+
+Four parameters are required, `name`, `indexName`, `appId`, and `apiKey`.
 
 #### Using Algolia as service:
 ```yaml
 tnd_search:
   instantsearch:
+  - name: main
     indexName: default
     appId: GMXXXXXXXQW
     apiKey: 027xxxxxxxxxxxxxxxxxxxxxxxxx53e
 ```
 
-#### Using Algolia as service:
+#### Using Meilisearch as service:
 ```yaml
 tnd_search:
   instantsearch:
+  - name: main
     indexName: default
-    appId: https://test.search.ws
+    appId: https://test.search.com
     apiKey: 027xxxxxxxxxxxxxxxxxxxxxxxxx53e
 ```
 
+### Registering InstantSearch widgets on scripts
 
-### Registering Components
-
-Each components must be 
+Each widget must be 
 1. registered in the module using the methods described below.
 2. Added to your template with an id matching its lowercase `name` parameter or optional `container` parameter
 
@@ -226,7 +242,7 @@ Many options are better handled through Javascript. In order to use javascript l
 1. Create a javascript file at `/assets/tnd-search/instantsearch/widgets.js` which export a `tndWidgets` variable as such:
 
 ```js
-export let tndAlgoliaWidgets = {
+export let tndWidgets = {
   hitsCustom: {
     transformItems(items) {
       return items.map(item => ({
@@ -245,9 +261,6 @@ export let tndAlgoliaWidgets = {
   [...]
   js: hitsCustom
 ```
-
-
-
 
 ## theNewDynamic
 
