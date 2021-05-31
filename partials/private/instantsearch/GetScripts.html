@@ -45,8 +45,8 @@
 {{/* We range on found script config */}}
 {{ range $script_config := $scripts_configs }}
   {{/* First making sure mandatory settings are set */}}
-  {{ range $key := slice "appid" "apikey" "indexname" }}
-    {{ if not (index $script_config .) }}
+  {{ range $key := slice "appId" "apiKey" "indexName" }}
+    {{ if and (not (index $script_config .)) (not (index $script_config (lower .))) }}
       {{ partial "tnd-search/warn" (printf "In order to use InstantSearch, you need to set a %s parameter to %s" . $script_config.name) }}
     {{ end }}
   {{ end }}
