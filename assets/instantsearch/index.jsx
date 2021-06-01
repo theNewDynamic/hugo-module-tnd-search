@@ -46,7 +46,6 @@ if(startEmpty) {
         // empty query string -> hide the search results & abort the search
         document.body.classList.add('tnd-search-empty-query')
         document.body.classList.remove('tnd-search-filled-query')
-        return;
       } else {
         document.body.classList.remove('tnd-search-empty-query')
         document.body.classList.add('tnd-search-filled-query')
