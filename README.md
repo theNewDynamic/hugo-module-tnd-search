@@ -3,8 +3,12 @@
 This module serve the two following purposes:
 
 - [x] Phase 1: Produce an index endpoint on your site
-- [x] Phase 2: Produce the JS front end search with Algolia.
-- [ ] Phase 3: Produce the JS front end search with other services
+- [x] Phase 2: Produce the JS front end search with Algolia/InstantSearch.
+- [x] Phase 3: Cater for MeiliSearch with InstantSearch
+
+TND Search adds tooling for site search. It takes care of
+1. Building an index to feed to your search service
+2. Building the front of your search with InstantSearch for either [Algolia](https://www.algolia.com/) or [MeiliSearch](https://www.meilisearch.com/)
 
 ## Requirements
 
@@ -42,7 +46,7 @@ OR __through homepage's Front Matter__
 ```yaml
 # content/_index.md
 title: Homepage
-homepage: 
+outputs: 
   - HTML
   - tnd_search
   # + any other outputs needed on the homepage.
@@ -51,7 +55,7 @@ homepage:
 
 ## Building the index
 
-User can control which entries go the index, and how their data is structured.
+User can control which search entries go the index, and how their data is structured.
 
 ### Targeting indexed entries with `data/entries` returning partial.
 
@@ -92,7 +96,7 @@ By default, the data will be:
 }
 ```
 
-User can add or overwrite entries, but not delete keys from the default set above.
+User can add entries or overwrite the above object's entries, but not delete keys from the default set above.
 
 ### Customizing entry data structure with settings
 One can add to the default entry structure using the `params` module settings.
@@ -147,7 +151,7 @@ Only `algolia` and `meili` are supported.
 
 #### primary_key (string) | default "id" (or "objectID" if service is set to algolia)
 
-When building your index, the module will store a unique idientifier under this reserved key.
+When building your index, the module will store a unique identifier under this reserved key.
 
 
 # FrontEnd
@@ -199,7 +203,7 @@ Each widget must be
 
 #### Register widgets settings
 
-Components option keys are matching Aloglia's own except for `cssClasses` which is shorttened to `classes`.
+Components option keys are matching InstantSearch's own except for `cssClasses` which is shorttened to `classes`.
 
 For example, in order to add a simple Search Box and Hits:
 
@@ -218,7 +222,7 @@ tnd_search:
         list: 'list-reset'
 ```
 
-Templates can also be customized through yaml using the componenent available keys:
+Templates can also be customized through yaml using the widget available template keys:
 
 ```yaml
 - name: hits
