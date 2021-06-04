@@ -1,11 +1,13 @@
-import algoliasearch from 'algoliasearch/lite';
-import { instantMeiliSearch } from "@meilisearch/instant-meilisearch";
-import instantsearch from 'instantsearch.js';
-import { history as historyRouter } from 'instantsearch.js/es/lib/routers';
-import { simple as simpleMapping } from 'instantsearch.js/es/lib/stateMappings';
-import * as instantWidgets from 'instantsearch.js/es/widgets';
+// Hugo injects the dynamic import statements itself by replacing the following with the generated list
+import dynamicImports from 'hugo'
+
+//Permanent imports
+import instantsearch from 'instantsearch.js'
 import { tnd_config } from '@params'
 
+// The 'widgetGeneratedList' string wil be replaced by the used widgets, ex: { searchBox, hits, clearRefinements, refinementList, configure }
+import widgetGeneratedList from 'instantsearch.js/es/widgets';
+const usedWidgets = widgetGeneratedList
 
 // Depending if user uses Data file or Params for config, casing won't be consistent...
 const indexName = typeof tnd_config.indexName != "undefined" ? tnd_config.indexName : tnd_config.indexname
@@ -20,7 +22,6 @@ if (tnd_config.service == "algolia") {
   let meiliSettings = {}
   searchClient = instantMeiliSearch(appId, apiKey, meiliSettings)
 }
-
 
 let settings = {
   indexName,
@@ -81,7 +82,7 @@ tnd_config.widgets.forEach(widget => {
   const widgetExist = require('./widgetExists.jsx')(widget)
   if(widgetExist){
     widgets.push(
-      instantWidgets[widget.name](require('./widgetSettings.jsx')(widget))
+      usedWidgets[widget.name](require('./widgetSettings.jsx')(widget))
     )
   } else {
     console.log(`No ${widget.name}`)
@@ -89,7 +90,7 @@ tnd_config.widgets.forEach(widget => {
 });
 //  attributesToSnippet: ['description:50'],
 //snippetEllipsisText: '...',
-let configure = {}
+let configureSettings = {}
 const allowedSettings = [
   "hitsPerPage",
   "distinct",
@@ -100,13 +101,13 @@ const allowedSettings = [
 ]
 allowedSettings.map(item => {
   if(typeof tnd_config[item] !== "undefined"){
-    return configure = {
-      ...configure,
+    return configureSettings = {
+      ...configureSettings,
       [item]: tnd_config[item]
     }
   }
 })
-widgets.push(instantWidgets.configure(configure))
+widgets.push(usedWidgets.configure(configureSettings))
 
 search.addWidgets(widgets);
 

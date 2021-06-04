@@ -23,8 +23,21 @@
 {{ with $service := partialCached "tnd-search/private/GetService" "GetService" }}
   {{ $script_config = merge $script_config (dict "service" .) }}
 {{ end }}
+
 {{ with resources.Get "/tnd-search/instantsearch/index.jsx" }}
-  {{/* Defines */}}
+  {{/* In order to preserve tree shaking, we need Hugo to handle the injection of import statements, included the list of widgets
+    which, after import, will be served from an dynamic keys (widgets[dynamic_key]) */}}
+  {{ $usedWidgets := partialCached "tnd-search/private/instantsearch/GetUsedWidgets" $script_config $script_config }}
+  {{ $content := replace .Content "widgetGeneratedList" (printf `{%s}` (delimit $usedWidgets "," )) }}
+  
+  {{ $dynamic_imports := partialCached "tnd-search/private/instantsearch/GetImportStatements" $script_config $script_config }}
+  {{ with $dynamic_imports }}
+    {{ $content = replace $content `import dynamicImports from 'hugo'` (delimit . ";") }}
+  {{ end }}
+
+  {{ $js = $content | resources.FromString "tnd-search/instantsearch/index.jsx" }}
+
+
   {{ $env := partialCached "tnd-env/Get" "Get" }}
   {{ $minify := false }}
   {{ $not_dev := partialCached "tnd-env/IsNot" "development" }}
@@ -32,8 +45,8 @@
   {{ if and $not_dev $not_server }}
     {{ $minify = true }}
   {{ end }}
+  {{/* Defines */}}
   {{ $defines := dict "process.env.NODE_ENV" (printf `"%s"` $env) }}
-
   {{/* Parameters found in Module InstantSearch configuration */}}
   {{ $params := dict "tnd_config" $script_config }}
 
@@ -58,7 +71,7 @@
     {{ $options = merge $options (dict "sourceMap" "inline") }}
   {{ end }}
 
-  {{ $js = . | js.Build $options }}
+  {{ $js = $js | js.Build $options }}
 {{ end }}
 
 {{ return $js }}
