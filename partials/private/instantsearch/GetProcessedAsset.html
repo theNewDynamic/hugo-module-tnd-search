@@ -32,7 +32,7 @@
   
   {{ $dynamic_imports := partialCached "tnd-search/private/instantsearch/GetImportStatements" $script_config $script_config }}
   {{ with $dynamic_imports }}
-    {{ $content = replace $content `import dynamicImport from 'hugo'` (delimit . ";") }}
+    {{ $content = replace $content `import dynamicImports from 'hugo'` (delimit . ";") }}
   {{ end }}
 
   {{ $js = $content | resources.FromString "tnd-search/instantsearch/index.jsx" }}
