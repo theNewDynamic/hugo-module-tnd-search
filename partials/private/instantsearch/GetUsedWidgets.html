@@ -1,0 +1,23 @@
+{{/*
+  GetUsedWidgets
+  In order to generate import statements and an array storing them, we need to list the instantsearch widgets used by user
+
+  @author @regisphilibert
+
+  @context Map (see script.config)
+
+  @access private
+
+  @returns Slice of strings
+
+*/}}
+{{ $widgets := slice "configure" }}
+{{ with .widgets }}
+  {{ range . }}
+    {{ with .name }}
+      {{ $widgets = $widgets | append . }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ return uniq $widgets }}

@@ -1,0 +1,39 @@
+{{/*
+  GetImportStatements
+  We need to dynamically generate import statements to optimize treeshaking
+
+  @author @regisphilibert
+
+  @context Map (see script.config)
+
+  @access private
+
+  @returns Slice of strings
+
+*/}}
+{{ $import_statements := dict
+  "routing" (slice
+    `import { history as historyRouter } from 'instantsearch.js/es/lib/routers'`
+    `import { simple as simpleMapping } from 'instantsearch.js/es/lib/stateMappings'`
+  )
+  "algolia" (slice
+    `import algoliasearch from 'algoliasearch/lite'`
+  )
+  "meili" (slice
+    `import { instantMeiliSearch } from "@meilisearch/instant-meilisearch"`
+  )
+}}
+
+{{ $used_imports := slice }}
+{{ if .routing }}
+  {{ $used_imports = $used_imports | append $import_statements.routing }}
+{{ end }}
+{{ if eq .service "algolia" }}
+  {{ $used_imports = $used_imports | append $import_statements.algolia }}
+{{ end }}
+
+{{ if eq .service "meili" "meilisearch" }}
+  {{ $used_imports = $used_imports | append $import_statements.meili }}
+{{ end }}
+
+{{ return $used_imports }}
