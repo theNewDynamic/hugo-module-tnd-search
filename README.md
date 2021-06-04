@@ -3,18 +3,18 @@
 This module serve the two following purposes:
 
 - [x] Phase 1: Produce an index endpoint on your site
-- [x] Phase 2: Produce the JS front end search with Algolia/InstantSearch.
-- [x] Phase 3: Cater for MeiliSearch with InstantSearch
+- [x] Phase 2: Produce the JS front end search with Algolia/InstantSearch.js
+- [x] Phase 3: Cater for MeiliSearch with InstantSearch.js
 
 TND Search adds tooling for site search. It takes care of
-1. Building an index to feed to your search service
-2. Building the front of your search with InstantSearch for either [Algolia](https://www.algolia.com/) or [MeiliSearch](https://www.meilisearch.com/)
+1. [Building an index to feed to your search service](#backend)
+2. [Building the front of your search](#frontend) with [InstantSearch.js](https://www.algolia.com/doc/api-reference/widgets/js/) for either [Algolia](https://www.algolia.com/) or [MeiliSearch](https://www.meilisearch.com/)
 
 ## Requirements
 
 Requirements:
 - Go 1.14
-- Hugo 0.60.0
+- Hugo 0.82.0
 
 ## Quick setup
 
@@ -154,9 +154,9 @@ Only `algolia` and `meili` are supported.
 When building your index, the module will store a unique identifier under this reserved key.
 
 
-# FrontEnd
+# Frontend
 
-The Module uses [InstantSearch.js](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/js/) to bandle the Front End of the search.
+The Module uses [InstantSearch.js](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/js/) to bandle the frontend of the search.
 
 ## Usage
 
@@ -195,7 +195,16 @@ tnd_search:
     apiKey: 027xxxxxxxxxxxxxxxxxxxxxxxxx53e
 ```
 
-### Registering InstantSearch widgets on scripts
+#### Available settings for scripts:
+
+- `hitsPerPage`
+- `distinct`
+- `clickAnalytics`
+- `enablePersonalization`
+- `attributesToSnippet`
+- `snippetEllipsisText`
+
+### Registering InstantSearch.js widgets on scripts
 
 Each widget must be 
 1. registered in the module using the methods described below.
@@ -203,13 +212,16 @@ Each widget must be
 
 #### Register widgets settings
 
-Components option keys are matching InstantSearch's own except for `cssClasses` which is shorttened to `classes`.
+Widget's `name` key should match the name of the InstantSearch.js widget.
+Widget option keys are matching InstantSearch.js's own except for `cssClasses` which is shorttened to `classes`.
 
 For example, in order to add a simple Search Box and Hits:
 
 ```yaml
 tnd_search:
   instantsearch:
+  - name: default
+    # [indexName, appId etc...]
     widgets:
     - name: searchBox
       placeholder: 'Search now!'
@@ -217,12 +229,16 @@ tnd_search:
         root: 'search__box mb-8'
         input: 'bg-transparent border-none w-full text-3xl'
     - name: hits
+      container: '#search-hits'
       classes:
         root: 'bg-white'
         list: 'list-reset'
 ```
 
-Templates can also be customized through yaml using the widget available template keys:
+The Module will then mount the [`searchBox` widget](https://www.algolia.com/doc/api-reference/widgets/search-box/js/) on your template's `<div id="searchbox"></div>` element and the [`hits` widget](https://www.algolia.com/doc/api-reference/widgets/hits/js/) on your template's `<div id="search-hits"></div>` element with provided settings.
+
+
+Even widget templates can be customized through `yaml` using the widget available template keys and [Hogan.js](http://twitter.github.io/hogan.js/) syntax:
 
 ```yaml
 - name: hits
@@ -239,11 +255,12 @@ Templates can also be customized through yaml using the widget available templat
       <span class="block border-b border-black px-8 py-2">No results</span>
 ```
 
+
 #### Complementing options through Javascript
 
-Many options are better handled through Javascript. In order to use javascript language to complement your widget options you need to:
+Many options are better handled through Javascript. In order to use javascript language to complement your widget `yaml` options you need to:
 
-1. Create a javascript file at `/assets/tnd-search/instantsearch/widgets.js` which export a `tndWidgets` variable as such:
+1. Create a javascript file at `/assets/tnd-search/instantsearch/widgets.js` which exports a `tndWidgets` object as such:
 
 ```js
 export let tndWidgets = {
@@ -258,11 +275,11 @@ export let tndWidgets = {
 }
 ```
 
-2 add a `js` key to your component yaml regisrering with a value matching a `tndWidgets` key.
+2 add a `js` key to your widget yaml regisrering with a value matching a `tndWidgets` object's key.
 
 ```yaml
 - name: hits
-  [...]
+  # [...]
   js: hitsCustom
 ```
 
