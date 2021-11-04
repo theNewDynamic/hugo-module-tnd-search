@@ -26,8 +26,16 @@ if (tnd_config.service == "algolia") {
 let settings = {
   indexName,
   searchClient,
-
 }
+
+// If filters is set, we complement settings with it.
+if (tnd_config.filters) {
+  settings = {
+    ...settings,
+    filters: tnd_config.filters
+  }
+}
+
 // If routing is true, we complement settings with those two.
 if(tnd_config.routing){
   settings = {
@@ -38,6 +46,7 @@ if(tnd_config.routing){
     },
   }
 }
+
 // If startEmpty is true, we complement settings a custom searchFunction
 if(startEmpty) {
   settings = {
@@ -55,7 +64,6 @@ if(startEmpty) {
     },
   }
 }
-
 
 // if tndAlgoliaSettings object export is found at /assets/tnd-search/instantsearch/settings.js 
 // we spread its content on top of current settings.
@@ -110,5 +118,15 @@ allowedSettings.map(item => {
 widgets.push(usedWidgets.configure(configureSettings))
 
 search.addWidgets(widgets);
+
+// For now only we can add the configure widget. And we do so only for `filters`,
+// In the future we should really allow users to add the configure widget like any other widget.
+if (typeof settings.filters != "undefined" && settings.filters != "") {
+  search.addWidgets([
+    configure({
+      "filters": settings.filters
+    })
+  ])
+}
 
 search.start();
