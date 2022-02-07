@@ -28,7 +28,7 @@
     {{ end }}
   {{ end }}
 {{ else }}
-  {{ $exclude := slice "iscjklanguage" "menus" "outputs" "aliases" "_build" "url" }}
+  {{ $exclude := slice "iscjklanguage" "menus" "menu" "outputs" "aliases" "_build" "url" }}
   {{ range $key, $v := $.Params }}
     {{ if not (in $exclude $key) }}
       {{ $s.SetInMap "params" $key . }}
