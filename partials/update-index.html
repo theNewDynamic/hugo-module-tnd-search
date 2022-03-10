@@ -57,13 +57,13 @@
   {{ if $fetch }}
     {{ with resources.GetRemote $update_doc_endpoint $args }}
       {{ with .Err }}
-        {{ warnf "%#v for %s" . $update_doc_endpoint }}
+        {{ partial "tnd-search/warn" (printf "API error: %#v for %s" . $update_doc_endpoint) }}
       {{ else }}
         {{ with .Content | unmarshal }}
           {{/* Using `isset` here as `updateId` can be `0` */}}
           {{ if isset . "updateId" }}
             {{ $success = true }}
-            {{ partial "tnd-search/warn" (printf "We've pushed %v documents for %s (updated id: %v, hash: %s)" (len $documents) $index .updateId $hash) }}
+            {{ partial "tnd-search/warn" (printf "We've posted %v documents for %s (updated id: %v, hash: %s)" (len $documents) $index .updateId $hash) }}
           {{ end }}
         {{ end }}
       {{ end }}
@@ -79,7 +79,7 @@
     "hash" $hash
     "endpoint" $update_doc_endpoint
   }}
-  {{ $message := slice (printf "Debug mode is on: We did not push %v documents for %s" $data.documents $data.index) }}
+  {{ $message := slice (printf "Debug mode is on: We did not post %v documents for %s" $data.documents $data.index) }}
   {{ range $key := slice "hash" "host" "key" "endpoint" }}
     {{ with index $data . }}
       {{ $message = $message | append (printf "%s: %v" $key .)}}
