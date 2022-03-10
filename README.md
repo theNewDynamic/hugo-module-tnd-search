@@ -283,6 +283,28 @@ export let tndWidgets = {
   js: hitsCustom
 ```
 
+## Experimental
+
+These are experimental features whose current UX is likely to shift in the future. Use with caution.
+
+### Update Index with Hugo (Meili ONLY)
+
+**requires Hugo 0.92.2**
+
+1. You'll need the `MEILI_HOST` environment variable pointing to your Meili server
+2. You'll need the `MEILI_PRIVATE_KEY` environment variable set with your Meili private key
+3. You'll need to add the following partial somewhere in a template file: (preferably limited to one execution per build, ex: `.IsHome` test for monolingual setups)
+```
+{{ if .IsHome | and hugo.IsProduction | and (not site.IsServer) }}
+  {{ partialCached "tnd-search/update-index" "index-name" "index-name" }}
+{{ end }}
+```
+4. 🎉
+
+WARNING: This **does not delete** documents from the index, only adds new ones and/or updates existing ones.
+
+For local development, you can drop a git ignored `data/env.yaml` file with the aforementioned keys and their value. 
+
 ## theNewDynamic
 
-This project is maintained and love by [thenewDynamic](https://www.thenewdynamic.com).
+This project is maintained and loved by [thenewDynamic](https://www.thenewdynamic.com).

@@ -1,0 +1,91 @@
+{{/*
+  update-index
+  Experimental feature to update Meili index with Hugo `resources.GetRemote`
+  
+  @author @regisphilibert
+
+  @context String (.): The index name
+
+  @access public
+
+  @returns Boolean
+
+  @uses
+     - tnd-search/GetConfig
+     - tnd-search/warn
+
+  @example - Go Template
+    {{ with partialCached "update-index" context context }}
+      {{ something = . }}
+    {{ end }}
+*/}}
+{{ $success := false }}
+
+{{ $fetch := true }}
+{{ $config := partialCached "tnd-search/private/GetConfig" "GetConfig" }}
+
+{{ $index := $ }}
+
+{{ $host := partial "tnd-search/private/GetEnvVar" "MEILI_HOST" }}
+{{ $key := partial "tnd-search/private/GetEnvVar" "MEILI_PRIVATE_KEY" }}
+{{ if not $host }}
+  {{ $fetch = false }}
+  {{ partial "tnd-search/err" "`MEILI_HOST` environment variable is required" }}
+{{ end }}
+{{ if not $key }}
+  {{ $fetch = false }}
+  {{ partial "tnd-search/err" "`MEILI_PRIVATE_KEY` environment variable is required" }}
+{{ end }}
+
+{{ $documents := partialCached "tnd-search/private/GetIndex" "GetIndex" }}
+{{ $documents_json := $documents | jsonify }}
+{{ $hash := $documents_json | sha256 }}
+{{ $update_doc_endpoint := print $host "/indexes/" $index "/documents#" $hash }}
+
+{{ $headers := dict
+  "content-type" "application/json"
+  "X-Meili-API-Key" $key
+}}
+{{ $args := dict
+  "method" "post"
+  "body" ($documents_json)
+  "headers" $headers
+}}
+
+{{ $debug := $config.debug | default false }}
+{{ if not $debug }}
+  {{ if $fetch }}
+    {{ with resources.GetRemote $update_doc_endpoint $args }}
+      {{ with .Err }}
+        {{ partial "tnd-search/warn" (printf "API error: %#v for %s" . $update_doc_endpoint) }}
+      {{ else }}
+        {{ with .Content | unmarshal }}
+          {{/* Using `isset` here as `updateId` can be `0` */}}
+          {{ if isset . "updateId" }}
+            {{ $success = true }}
+            {{ partial "tnd-search/warn" (printf "We've posted %v documents for %s (updated id: %v, hash: %s)" (len $documents) $index .updateId $hash) }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ else }}
+  {{ $data := dict
+    "headers" $headers
+    "host" $host
+    "index" $index
+    "key" $key
+    "documents" (len $documents)
+    "hash" $hash
+    "endpoint" $update_doc_endpoint
+  }}
+  {{ $message := slice (printf "Debug mode is on: We did not post %v documents for %s" $data.documents $data.index) }}
+  {{ range $key := slice "hash" "host" "key" "endpoint" }}
+    {{ with index $data . }}
+      {{ $message = $message | append (printf "%s: %v" $key .)}}
+    {{ end }}
+  {{ end }}
+  {{ partial "tnd-search/warn" (delimit $message "\n  ") }}
+{{ end }}
+
+{{ return $success }}
